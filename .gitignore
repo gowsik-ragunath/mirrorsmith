@@ -1,6 +1,2 @@
-node_modules/
-.next/
-out/
-docs/clone/
-*.tsbuildinfo
-.DS_Store
+mirrorsmith-skill-feedback.md
+.opencode/

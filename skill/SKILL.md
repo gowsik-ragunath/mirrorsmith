@@ -37,9 +37,21 @@ Never clone from memory. Never guess a URL the user did not give.
 1. **Rights check:** confirm the user holds the rights to clone the source. One
    question is enough; if they decline or the source is clearly a paid template they
    don't own, stop.
-2. **Project exists:** the working directory must be a mirrorsmith project (it has
-   `scripts/fetch-source.mjs`). If not, ask the user to run `npx mirrorsmith init .`
-   — do not scaffold manually.
+2. **Project setup:** if the working directory is already a mirrorsmith
+   project (has `scripts/fetch-source.mjs`), use it as-is. Otherwise create
+   the Next.js app yourself, then set up the scripts:
+
+   ```bash
+   npx create-next-app@latest <name> --ts --tailwind --eslint --app \
+     --src-dir --import-alias "@/*" --use-npm --yes
+   cd <name>
+   npm i -D playwright pngjs
+   npx playwright install chromium
+   cp <skill-dir>/scripts/*.mjs scripts/     # the five toolkit scripts
+   ```
+
+   `<skill-dir>` is where `npx mirrorsmith install-skill` placed the skill.
+   Never scaffold over existing files.
 
 ## Workflow
 

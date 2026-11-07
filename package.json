@@ -24,7 +24,6 @@
   "files": [
     "bin/",
     "skill/",
-    "template/",
     "evals/",
     "README.md",
     "LICENSE"

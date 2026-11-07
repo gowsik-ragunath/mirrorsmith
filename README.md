@@ -35,12 +35,10 @@ Then say to your agent: *clone https://example.com*, or `/mirrorsmith https://ex
 
 ## Start a clone project
 
-```bash
-npx mirrorsmith init my-clone          # scaffolds the template + install scripts
-cd my-clone
-```
+No separate scaffold command — the skill creates the Next.js app itself when
+you use it (create-next-app + the toolkit scripts copied from the skill).
 
-The template ships the measurement tooling, so agents don't need a browser MCP:
+The toolkit ships with the skill, so agents don't need a browser MCP:
 
 - `scripts/fetch-source.mjs` — the page's own HTML + CSS as the build blueprint
 - `scripts/capture.mjs` — screenshots + measurements + section detection + assets
@@ -50,10 +48,10 @@ The template ships the measurement tooling, so agents don't need a browser MCP:
 ## Repository layout
 
 ```
-bin/cli.mjs              npx entry (init / install-skill)
-skill/SKILL.md           the agent workflow (~150 lines)
+bin/cli.mjs              npx entry (install-skill)
+skill/SKILL.md           the agent workflow
+skill/scripts/           Playwright toolkit the agent copies into each project
 skill/references/        extraction, sections, motion, qa guidance
-template/                the Next.js project every clone is built in
 evals/                   benchmark procedure + fixed gold sources
 ```
 
