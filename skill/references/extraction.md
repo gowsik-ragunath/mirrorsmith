@@ -110,8 +110,10 @@ transition in the spec.
 
 ## Assets
 
-Every section that renders a photo, logo, background image, video or webfont fetches
-it from the source, converted to a local copy:
+Every section that renders a photo, logo, background image, video or webfont
+fetches it from the source, converted to a local copy (marketplace webfonts
+excepted — Next.js loads those from Google with `next/font/google`, see the
+Fonts section at the bottom):
 
 ```bash
 node scripts/download-assets.mjs --input docs/clone/source/assets.json --out public/assets
@@ -124,6 +126,11 @@ paths only. Large images (>1MB) belong as `.webp` where quality allows; don't bl
 
 ## Fonts
 
-The capture lists `font-family` values actually in use. Next.js template loads the
-closest Google Fonts in `src/app/layout.tsx` via `next/font/google`; self-hosted
-fonts land in `public/assets/fonts/` through the asset downloader.
+The capture lists `font-family` values actually in use. Next.js loads fonts
+from Google via `next/font/google` in `src/app/layout.tsx`: pick the closest
+Google family for every family the capture found, with the weights/sizes the
+capture shows (`next/font/google` subsets and caches them at build; no
+external `@import` and no self-hosted files needed for marketplace fonts).
+Only when a family isn't on Google falls back to self-hosting: the webfont
+files land in `public/assets/fonts/` through the asset downloader, and you
+write the `@font-face` rules yourself.
