@@ -1,0 +1,35 @@
+{
+  "name": "mirrorsmith",
+  "version": "0.1.0",
+  "description": "Pixel-accurate static website cloner for coding agents. Measures a live page with Playwright and rebuilds it as a fresh Next.js + Tailwind site — reverse-engineered, never copied.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Gowsik",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gowsik/mirrorsmith.git"
+  },
+  "keywords": [
+    "skill",
+    "agent",
+    "opencode",
+    "claude",
+    "clone",
+    "playwright",
+    "nextjs"
+  ],
+  "bin": {
+    "mirrorsmith": "./bin/cli.mjs"
+  },
+  "files": [
+    "bin/",
+    "skill/",
+    "template/",
+    "evals/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}
