@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 // Capture a source page: screenshots, measurements, sections, assets.
-// Usage: node scripts/capture.mjs --url <URL> [--out docs/clone/source] [--widths 1440,768,390] [--wait 1500]
+// Usage: node scripts/capture.mjs --url <URL> [--out docs/clone/source] [--widths 1440,1000,768,390] [--wait 1500]
 import fs from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { DEFAULT_WIDTHS, cropBand, launchBrowser, measurePage, openPage } from "./lib.mjs";
+import { DEFAULT_WIDTHS, cropBand, launchBrowser, measurePage, openPage, settlePage } from "./lib.mjs";
 
 const arg = (name) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -32,7 +32,8 @@ const measures = [];
 try {
   for (const width of widths) {
     const { context, page } = await openPage(browser, { url, width });
-    await page.waitForTimeout(waitMs); // let lazy images and reveals settle
+    await page.waitForTimeout(waitMs); // let lazy images and reveals start
+    await settlePage(page);            // scroll sweep + freeze animations at end states
     const shotPath = path.join(shotsDir, `page-${width}.png`);
     await page.screenshot({ path: shotPath, fullPage: true });
 

@@ -4,10 +4,40 @@ import path from "node:path";
 import { PNG } from "pngjs";
 import { chromium } from "playwright";
 
-export const DEFAULT_WIDTHS = [1440, 768, 390];
+export const DEFAULT_WIDTHS = [1440, 1000, 768, 390];
 
-export async function launchBrowser() {
-  return chromium.launch({ headless: true });
+// Freeze animations/transitions; scroll the page stepwise to bottom (and
+// back) so IntersectionObserver reveals fire — full-page shots never
+// dispatch scroll/spy events on the live page, which leaves half of
+// builder-SPA pages invisible (opacity 0) otherwise.
+const SETTLE_CSS = `
+*, *::before, *::after {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0s !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0s !important;
+}
+`;
+
+export async function settlePage(page) {
+  await page.evaluate(async () => {
+    const step = window.innerHeight;
+    for (let y = 0; y < document.body.scrollHeight; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 40));
+    }
+    window.scrollTo(0, document.body.scrollHeight);
+    await new Promise((r) => setTimeout(r, 120));
+    window.scrollTo(0, 0);
+    await new Promise((r) => setTimeout(r, 120));
+  });
+  await page.addStyleTag({ content: SETTLE_CSS });
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(150);
+}
+
+export async function launchBrowser({ headless = true } = {}) {
+  return chromium.launch({ headless });
 }
 
 export async function openPage(browser, { url, width }) {
