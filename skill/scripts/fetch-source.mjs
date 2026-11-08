@@ -4,6 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
+import { detectSsr, detachSsr } from "./ssr-detach.mjs";
 
 const { values } = parseArgs({
   options: {
@@ -70,6 +71,21 @@ for (const url of cssUrls.slice(0, maxCss)) {
 }
 
 fs.writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 1));
+
+// SSR detach pass: when the fetch is framework-rendered (Next/Nuxt/Remix/…),
+// also write index.standalone.html — scripts stripped, stylesheets rebound to
+// the local css/ files — so the blueprint is standalone, never hydrating from
+// the source's bundles. Content mining uses framework.json payloads.
+const cssMap = Object.fromEntries(manifest.css.map((c) => [c.url, c.file]));
+if (detectSsr(html)) {
+  const { framework, payloads, html: standalone } = detachSsr(html, { cssMap });
+  fs.writeFileSync(path.join(outDir, "index.standalone.html"), standalone);
+  if (payloads.length) fs.writeFileSync(path.join(outDir, "framework.json"), payloads.join("\n"));
+  manifest.ssr = { framework, standalone: true, payloads: payloads.length };
+  fs.writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 1));
+  console.log(`\nSSR:  ${framework} page → index.standalone.html (scripts stripped, CSS local, standalone).`);
+  console.log("      Build from index.standalone.html; mine data from framework.json.");
+}
 
 const totalCssKB = (manifest.css.reduce((a, c) => a + c.bytes, 0) / 1024).toFixed(0);
 console.log(`HTML: index.html ${htmlKB}KB${htmlTruncated ? " (TRUNCATED at --max-bytes; raise it to fetch fully)" : ""}`);

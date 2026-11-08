@@ -41,6 +41,8 @@ you use it (create-next-app + the toolkit scripts copied from the skill).
 The toolkit ships with the skill, so agents don't need a browser MCP:
 
 - `scripts/fetch-source.mjs` — the page's own HTML + CSS as the build blueprint
+- `scripts/ssr-detach.mjs` — SSR pages: strips the framework's JS/payloads and
+  frees the rendered markup for a standalone rebuild (`index.standalone.html`)
 - `scripts/capture.mjs` — screenshots + measurements + section detection + assets
 - `scripts/diff.mjs` — per-section pixel diff with threshold gate
 - `scripts/download-assets.mjs` — resumable asset downloader

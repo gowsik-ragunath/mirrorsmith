@@ -13,6 +13,12 @@ Two ground truths, in priority order:
 2. **Measurements cover the rest.** If the source is obfuscated, an SPA bundle, or
    otherwise unreadable, fall back to Playwright measurement capture (computed
    styles, boxes, fonts) at every capture width.
+3. **SSR pages are read standalone.** Framework-rendered sources (Next, Nuxt,
+   Remix, SvelteKit, Astro, Gatsby) ship rendered HTML plus hydration payloads.
+   Build from the detached markup (`index.standalone.html` — scripts stripped,
+   CSS local), mine data from `framework.json`, and re-implement interactivity
+   in the clone's own React. The clone must run with zero source-origin
+   requests. Details: `references/ssr.md`.
 
 The clone is a **responsive site that looks like the source at 1440 / 1000 /
 768 / 390**. Identity is verified visually (side-by-side shots), never by a
@@ -69,7 +75,9 @@ so animations/reveals are complete), detected sections with crop images, and
 an asset manifest. **Check `sections.json` against the screenshots** — on
 builder SPAs the detector can collapse the whole page into one giant band:
 hand-split it into real bands using the screenshots + measured boxes, then
-re-run capture. Use `grep`/`sed` on the fetched HTML/CSS per region — never
+re-run capture. If `fetch-source` printed an SSR line, build from
+`index.standalone.html` and mine content from `framework.json` — see
+`references/ssr.md`. Use `grep`/`sed` on the fetched HTML/CSS per region — never
 load whole files into context. Details: `references/extraction.md`.
 
 ### 2. Base globals first (before any user questions)
@@ -164,4 +172,5 @@ rounds maximum per root cause, then stop and report. Details:
 | Taking input (fetch source / capture / re-extract / fix sections) | `references/extraction.md` |
 | Asking about sections | `references/sections.md` |
 | Adding polish motion | `references/motion.md` |
+| SSR/framework-rendered source | `references/ssr.md` |
 | Visual verification + diffs | `references/qa.md` |

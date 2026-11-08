@@ -1,6 +1,6 @@
 {
   "name": "mirrorsmith",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Pixel-accurate static website cloner for coding agents. Measures a live page with Playwright and rebuilds it as a fresh Next.js + Tailwind site — reverse-engineered, never copied.",
   "type": "module",
   "license": "MIT",
