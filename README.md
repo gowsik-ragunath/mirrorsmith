@@ -1,35 +1,50 @@
 # mirrorsmith
 
-Pixel-accurate static website cloner for coding agents.
+Visually-accurate static website cloner for coding agents.
 
 Give it a URL and an OpenCode (or other coding agent) session rebuilds the page as a
-fresh **Next.js + Tailwind v4** project — **reverse-engineered from Playwright
-measurements, never by copying the source code**. The clone is diffed pixel-for-pixel
-against the source until every kept section is within a 1% pixel mismatch.
+fresh **Next.js + Tailwind v4** site — built from the page's own readable HTML + CSS
+when available, and from Playwright measurements otherwise. The result is a fluid
+responsive site verified visually at multiple widths (1440 / 1000 / 768 / 390),
+not a pixel-threshold gate. Never copied, always reverse-engineered.
 
 ## How it works
 
-1. **Capture** — Playwright screenshots the source at 1440 / 768 / 390 px and records
-   computed styles, layout boxes, fonts, colors and real assets into JSON.
-2. **Read the source** — because the pixel diff needs screenshots either way, but the
-   build blueprint comes straight from the page's own HTML + CSS whenever those are
-   readable (`fetch-source.mjs`); measured JSON is the fallback when they aren't.
+1. **Read the source** — when the site serves readable HTML and CSS, fetch it and
+   build directly from it (`fetch-source.mjs`): it is the cheapest, most exact
+   spec. For SSR pages (`ssr-detach.mjs`), the framework's scripts and payloads
+   are stripped and interactivity is re-implemented in the clone's own React —
+   the clone runs with zero source-origin requests.
+2. **Measure the rest** — if the source is obfuscated or an SPA bundle, Playwright
+   captures the page at 1440 / 1000 / 768 / 390 px and records computed styles,
+   layout boxes, fonts, colors and real assets into JSON.
 3. **Section selection** — the agent lists every detected section, shows crops, and
    asks the user which ones to keep, drop, or re-write with new text.
-4. **Spec & build** — one short spec per kept section (from the fetched source when
-   readable, else from measurements); the agent ports it into new Next.js
-   components. Photos, logos and webfonts are downloaded.
-5. **Diff** — `pixelmatch` compares source vs clone per section per width. Any
-   section above the 1% mismatch threshold gets another pass.
+4. **Spec & build** — one short spec per kept section; the agent ports it into new
+   Next.js components. Photos, logos and webfonts are downloaded.
+5. **Visual verification** — side-by-side screenshots per width, plus per-section
+   diff overlays (`diff.mjs`) that highlight where the clone drifts from the
+   source. Identity is judged visually, never by a pixel-threshold number; any
+   section that looks off gets another pass.
 6. **Polish (opt-in, subtle)** — light motion (fades, 12px lifts, stagger) added
-   after the diff passes, settling into the exact verified layout.
+   after verification passes, settling into the exact verified layout.
 7. **Gate** — `npm run build` must pass clean.
 
 ## Install the skill
 
 ```bash
-npx mirrorsmith install-skill          # installs into ~/.config/opencode/skills/mirrorsmith
+npx mirrorsmith install-skill
 ```
+
+Installs into OpenCode's global skills directory, resolved the same way OpenCode
+itself does it (works on Linux, macOS and Windows):
+
+1. `OPENCODE_CONFIG_DIR` — if set, used as-is
+2. `$XDG_CONFIG_HOME/opencode` — if set
+3. `~/.config/opencode` — default (`C:\Users\you\.config\opencode` on Windows)
+
+Use `--dir <path>` for a custom location, then add that directory to OpenCode's
+`skills` config.
 
 Then say to your agent: *clone https://example.com*, or `/mirrorsmith https://example.com`.
 

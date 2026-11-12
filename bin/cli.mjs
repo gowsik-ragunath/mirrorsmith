@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SKILL = path.join(ROOT, "skill");
 
-const HELP = `mirrorsmith — pixel-accurate static website cloner for coding agents
+const HELP = `mirrorsmith — visually-accurate static website cloner for coding agents
 
 Usage:
   npx mirrorsmith install-skill [--dir p]     Install the skill for OpenCode
