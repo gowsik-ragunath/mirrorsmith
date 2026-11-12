@@ -31,9 +31,15 @@ async function main() {
 
   if (command === "install-skill") {
     const flagIdx = argv.indexOf("--dir");
+    // Match opencode's own resolution (see sst/opencode packages/util/src/global-roots.ts):
+    // OPENCODE_CONFIG_DIR wins, then $XDG_CONFIG_HOME/opencode, else ~/.config/opencode.
+    const configDir =
+      process.env.OPENCODE_CONFIG_DIR ||
+      (process.env.XDG_CONFIG_HOME
+        ? path.join(process.env.XDG_CONFIG_HOME, "opencode")
+        : path.join(os.homedir(), ".config", "opencode"));
     const target =
-      (flagIdx >= 0 && argv[flagIdx + 1]) ||
-      path.join(os.homedir(), ".config", "opencode", "skills", "mirrorsmith");
+      (flagIdx >= 0 && argv[flagIdx + 1]) || path.join(configDir, "skills", "mirrorsmith");
     if (existsSync(target)) await rm(target, { recursive: true });
     await cp(SKILL, target, { recursive: true });
     console.log(`Skill installed at ${target}`);
