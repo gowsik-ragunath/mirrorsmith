@@ -1,13 +1,13 @@
 {
   "name": "mirrorsmith",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Visually-accurate static website cloner. Use when the user gives a URL (or template HTML files) and asks to clone, replicate, mirror, rebuild, or reverse-engineer it into a static Next.js site. Builds from the page's own readable source when available, and from Playwright measurements otherwise — a fluid responsive site verified visually at multiple widths, not a pixel-threshold gate. Not for design reviews, redesigns, or interactive backends.",
   "type": "module",
   "license": "MIT",
   "author": "Gowsik",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gowsik/mirrorsmith.git"
+    "url": "git+https://github.com/gowsik-ragunath/mirrorsmith.git"
   },
   "keywords": [
     "skill",

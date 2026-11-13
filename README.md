@@ -6,7 +6,7 @@ Give it a URL and an OpenCode (or other coding agent) session rebuilds the page 
 fresh **Next.js + Tailwind v4** site — built from the page's own readable HTML + CSS
 when available, and from Playwright measurements otherwise. The result is a fluid
 responsive site verified visually at multiple widths (1440 / 1000 / 768 / 390),
-not a pixel-threshold gate. Never copied, always reverse-engineered.
+not a pixel-threshold gate.
 
 ## How it works
 
